@@ -1,6 +1,13 @@
 <resources>
     <string name="app_name">QuizApplication</string>
-    <string name="question">Is it hot?</string>
+    <string name="q1">Is Moscow the capital of Russia?</string>
+    <string name="q2">Is New York the capital of the U.S.?</string>
+    <string name="q3">Is Washington D.C. the capital of the U.S.?</string>
+    <string name="q4">Is Canberra the capital of Australia?</string>
+    <string name="q5">Is Kharkiv the capital of Ukraine?</string>
+    <string name="q6">Is Kiev the capital of Ukraine?</string>
     <string name="true_button">True</string>
     <string name="false_button">False</string>
+    <string name="next_button">Next</string>
+    <string name="prev_button">Previous</string>
 </resources>
