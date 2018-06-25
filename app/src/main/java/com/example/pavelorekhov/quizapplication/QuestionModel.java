@@ -46,7 +46,7 @@ public class QuestionModel {
             return text;
         }
 
-        public boolean isAnswer() {
+        public boolean isAnswerTrue() {
             return answer;
         }
     }
