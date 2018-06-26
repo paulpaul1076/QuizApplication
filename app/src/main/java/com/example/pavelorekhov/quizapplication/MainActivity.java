@@ -9,19 +9,32 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 public class MainActivity extends AppCompatActivity {
 
     static final String TAG = "QuizActivity";
+    static final String CHEAT_POS = "CHEAT_POS";
     static final String ANSWER = "answer";
     static final int CHEAT_REQUEST_CODE = 0;
 
-    private boolean isCheater = false;
+    private Set<Integer> cheatedPositions = new HashSet<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setTitle("Capitals");
+
+        if (savedInstanceState != null) {
+            ArrayList<Integer> arrayList = savedInstanceState.getIntegerArrayList(CHEAT_POS);
+            if (arrayList != null) {
+                cheatedPositions = new HashSet<>(arrayList);
+            }
+        }
 
         final Button nextButton = findViewById(R.id.next_button);
         final Button prevButton = findViewById(R.id.prev_button);
@@ -33,19 +46,17 @@ public class MainActivity extends AppCompatActivity {
         textView.setText(QuestionModel.questions[QuestionModel.getCurrentQuestionPos()].getText());
 
         nextButton.setOnClickListener(view -> {
-            isCheater = false;
             textView.setText(QuestionModel.questions[QuestionModel.moveToNextQuestionPos()].getText());
         });
 
         prevButton.setOnClickListener(view -> {
-            isCheater = false;
             textView.setText(QuestionModel.questions[QuestionModel.moveToPrevQuestionPos()].getText());
         });
 
         trueButton.setOnClickListener(view -> {
             QuestionModel.Question curQ = QuestionModel.questions[QuestionModel.getCurrentQuestionPos()];
             if (curQ.isAnswerTrue()) {
-                if (isCheater) {
+                if (cheatedPositions.contains(QuestionModel.getCurrentQuestionPos())) {
                     Toast.makeText(this, "You fucking cheater!", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(this, "Correcto!", Toast.LENGTH_SHORT).show();
@@ -60,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
             if (curQ.isAnswerTrue()) {
                 Toast.makeText(this, "Incorrecto!", Toast.LENGTH_SHORT).show();
             } else {
-                if (isCheater) {
+                if (cheatedPositions.contains(QuestionModel.getCurrentQuestionPos())) {
                     Toast.makeText(this, "You fucking cheater!", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(this, "Correcto!", Toast.LENGTH_SHORT).show();
@@ -78,13 +89,58 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        ArrayList<Integer> arrayList = new ArrayList<>(cheatedPositions);
+        outState.putIntegerArrayList(CHEAT_POS, arrayList);
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CHEAT_REQUEST_CODE) {
             if (data == null) {
                 return;
             }
-            isCheater = data.getBooleanExtra(CheatActivity.DID_USER_CHEAT, false);
+            if (data.getBooleanExtra(CheatActivity.DID_USER_CHEAT, false)) {
+                cheatedPositions.add(QuestionModel.getCurrentQuestionPos());
+            }
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d(TAG, "onRestart");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy");
     }
 }
